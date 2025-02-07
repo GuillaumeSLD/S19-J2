@@ -1,36 +1,19 @@
-### @file ./.github/workflows/netlify.yml
 name: Deploy to Netlify
 
-# Contrôle l'exécution du workflow
 on:
-  # Déclenchement lors d'un push mais uniquement sur la branche `master`
   push:
-    branches: [ "master" ]
-  
-  # Autorisation de déclencher manuellement du workflow depuis l'onglet « Actions » du dépôt GH
+    branches: 
+      - "master"
   workflow_dispatch:
 
-# Définition des permissions nécessaire pour GH Pages
 permissions:
-  # Permission de lire le contenu du dépôt
-  # (nécessaire pour le processus de checkout du code, comme dans l'étape actions/checkout@v4)
   contents: read
-  # Permission d'écrire sur GH Pages
-  # (essentiel pour que le processus de déploiement fonctionne correctement)
-  pages: write
-  # Permet de créer un token
-  # (peut être nécessaire pour interagir avec d'autres services ou APIs externes pour prouver l'identité du workflow ; ex. : Google Cloud, authentification OAuth…)
   id-token: write
 
-# Un workflow est composé d'une ou plusieurs tâches exécutées de manière séquentielle ou en parallèle
 jobs:
-  # Tâche pour le build du projet
   build:
-    # Type du runner : la tâche s'exécute sur Ubuntu
     runs-on: ubuntu-latest
-    # Étapes de la tâche
     steps:
-      # Récupère le code du dépôt (copie notre code dans le runner Ubuntu → git checkout S19E02-gh-pages)
       - name: 📥 Checkout du code
         uses: actions/checkout@v4
 
@@ -40,37 +23,26 @@ jobs:
           version: 10
           run_install: false
 
-      # Prépare l'environnement Node
       - name: ⚙️ Setup de l'environnement Node.js
         uses: actions/setup-node@v4
-        # with:
-          # node-version: 22
 
-      # Installation des dépendances
       - name: 📦 Installation des dépendances
         run: pnpm install
 
-      # Lancement des tests
       - name: 🧪 Lancement des tests
         run: pnpm test || echo "⚠️ Pas de test trouvé mais le déploiement continue…"
 
-      # Installation de Biome (via l'action officielle)
-      # → https://biomejs.dev/recipes/continuous-integration
       - name: 🚀 Installer Biome
         uses: biomejs/setup-biome@v2
         with:
           version: latest
-      
-      # Vérification du code avec Biome
+
       - name: 🎨 Exécuter Biome pour formater et analyser le code
         run: biome check --apply .
-        # run: biome check --apply # permet d'appliquer la correction au lieu de bloquer le déploiement
 
-      # Build du projet
       - name: 🏗️ Build du projet
         run: pnpm build
 
-  # Tâche pour déployer sur Netlify
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -78,9 +50,9 @@ jobs:
       - name: 📥 Checkout du code
         uses: actions/checkout@v4
 
-      # Installer Netlify CLI avec PNPM
+      # Installer Netlify CLI globalement via PNPM
       - name: 🚀 Installer Netlify CLI via PNPM
-        run: pnpm install netlify-cli --save-dev
+        run: pnpm add -g netlify-cli
 
       # Déploiement sur Netlify
       - name: 🚀 Déploiement sur Netlify
