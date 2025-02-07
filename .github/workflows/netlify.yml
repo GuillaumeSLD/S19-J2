@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout du code
@@ -21,10 +21,12 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 10
-          run_install: false
 
       - name: ⚙️ Setup de l'environnement Node.js
         uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
 
       - name: 📦 Installation des dépendances
         run: pnpm install
@@ -43,21 +45,12 @@ jobs:
       - name: 🏗️ Build du projet
         run: pnpm build
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📥 Checkout du code
-        uses: actions/checkout@v4
-
-      # Installer Netlify CLI globalement via PNPM
-      - name: 🚀 Installer Netlify CLI via PNPM
-        run: pnpm add -g netlify-cli
-
-      # Déploiement sur Netlify
       - name: 🚀 Déploiement sur Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: |
-          netlify deploy --prod --dir=dist --auth ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          npx netlify-cli deploy --prod --dir=dist
 
       - name: 🔗 Affichage de l'URL du site déployé
-        run: echo "🔗 Votre site est disponible à ${{ steps.deploy.outputs.url }}"
+        run: echo "🔗 Votre site est disponible sur Netlify"
