@@ -45,12 +45,18 @@ jobs:
       - name: 🏗️ Build du projet
         run: pnpm build
 
-      - name: 🚀 Déploiement sur Netlify
+      - name: Create Netlify Site
+        run: |
+          site_id=$(npx netlify-cli sites:create --name my-new-site --account-slug my-team --json | jq -r '.id')
+          echo "NETLIFY_SITE_ID=$site_id" >> $GITHUB_ENV
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: |
-          npx netlify-cli deploy --prod --dir=dist
+
+      - name: 🚀 Déploiement sur Netlify
+        run: npx netlify-cli deploy --prod --dir=dist
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ env.NETLIFY_SITE_ID }}
 
       - name: 🔗 Affichage de l'URL du site déployé
         run: echo "🔗 Votre site est disponible sur Netlify"
