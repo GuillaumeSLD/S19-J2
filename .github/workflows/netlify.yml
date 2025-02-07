@@ -75,15 +75,15 @@ jobs:
     needs: build # Cette tâche dépend du succès de la tâche "build"
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout du code
-        uses: actions/checkout@v4
-
-      - name: 🏗️ Préparation du déploiement sur Netlify
-        run: |
-          echo "Déploiement sur Netlify..."
-          curl -sL https://github.com/netlify/cli/releases/download/v10.4.0/netlify-cli-linux-x64.tar.gz | tar xz
-          mv netlify /usr/local/bin
-
-      - name: 🚀 Déploiement sur Netlify
-        run: |
-          netlify deploy --prod --dir=dist
+        - name: 📥 Checkout du code
+          uses: actions/checkout@v4
+  
+        # Installer Netlify CLI
+        - name: 🚀 Installer Netlify CLI via npm
+          run: npm install netlify-cli --save-dev
+  
+        # Déploiement sur Netlify
+        - name: 🚀 Déploiement sur Netlify
+          run: |
+            # biome-ignore-next-line
+            netlify deploy --prod --dir=dist --auth ${{ secrets.NETLIFY_AUTH_TOKEN }}
