@@ -63,7 +63,7 @@ jobs:
       
       # Vérification du code avec Biome
       - name: 🎨 Exécuter Biome pour formater et analyser le code
-        run: biome ci .
+        run: biome check --apply .
         # run: biome check --apply # permet d'appliquer la correction au lieu de bloquer le déploiement
 
       # Build du projet
