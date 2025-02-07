@@ -51,7 +51,7 @@ jobs:
       - name: 🌐 Création du site Netlify et déploiement
         run: |
           echo "Création d'un nouveau site Netlify..."
-          site_info=$(netlify sites:create --name "my-new-site-$(date +%s)" --account-slug sigyn --json)
+          site_info=$(netlify sites:create --name "my-new-site-$(date +%s)" --account-slug guillaumesld --json)
           site_id=$(echo $site_info | jq -r '.id')
           site_url=$(echo $site_info | jq -r '.ssl_url')
           echo "Site ID: $site_id"
