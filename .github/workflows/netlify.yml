@@ -80,7 +80,7 @@ jobs:
 
       # Installer Netlify CLI avec PNPM
       - name: 🚀 Installer Netlify CLI via PNPM
-        run: pnpm add -g netlify-cli
+        run: pnpm install netlify-cli --save-dev
 
       # Déploiement sur Netlify
       - name: 🚀 Déploiement sur Netlify
