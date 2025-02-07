@@ -48,23 +48,18 @@ jobs:
       - name: 🛠️ Installation de Netlify CLI
         run: npm install -g netlify-cli
 
-      - name: 🌐 Création ou récupération du site Netlify
+      - name: 🌐 Création du site Netlify et déploiement
         run: |
-          if [ -z "${{ secrets.NETLIFY_SITE_ID }}" ]; then
-            echo "Création d'un nouveau site Netlify..."
-            site_id=$(netlify sites:create --name "my-new-site-$(date +%s)" --account-slug sigyn --json | jq -r '.id')
-            echo "NETLIFY_SITE_ID=$site_id" >> $GITHUB_ENV
-          else
-            echo "Utilisation du site Netlify existant..."
-            echo "NETLIFY_SITE_ID=${{ secrets.NETLIFY_SITE_ID }}" >> $GITHUB_ENV
-          fi
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-
-      - name: 🚀 Déploiement sur Netlify
-        run: netlify deploy --prod --dir=dist --site ${{ env.NETLIFY_SITE_ID }}
+          echo "Création d'un nouveau site Netlify..."
+          site_info=$(netlify sites:create --name "my-new-site-$(date +%s)" --account-slug sigyn --json)
+          site_id=$(echo $site_info | jq -r '.id')
+          site_url=$(echo $site_info | jq -r '.ssl_url')
+          echo "Site ID: $site_id"
+          echo "Déploiement sur le nouveau site..."
+          netlify deploy --prod --dir=dist --site $site_id
+          echo "NETLIFY_SITE_URL=$site_url" >> $GITHUB_ENV
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
       - name: 🔗 Affichage de l'URL du site déployé
-        run: echo "🔗 Votre site est disponible sur Netlify"
+        run: echo "🔗 Votre site est disponible sur ${{ env.NETLIFY_SITE_URL }}"
