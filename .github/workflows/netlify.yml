@@ -72,18 +72,20 @@ jobs:
 
   # Tâche pour déployer sur Netlify
   deploy:
-    needs: build # Cette tâche dépend du succès de la tâche "build"
+    needs: build
     runs-on: ubuntu-latest
     steps:
-        - name: 📥 Checkout du code
-          uses: actions/checkout@v4
-  
-        # Installer Netlify CLI
-        - name: 🚀 Installer Netlify CLI via npm
-          run: npm install netlify-cli --save-dev
-  
-        # Déploiement sur Netlify
-        - name: 🚀 Déploiement sur Netlify
-          run: |
-            # biome-ignore-next-line
-            netlify deploy --prod --dir=dist --auth ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      # Installer Netlify CLI avec PNPM
+      - name: 🚀 Installer Netlify CLI via PNPM
+        run: pnpm add -g netlify-cli
+
+      # Déploiement sur Netlify
+      - name: 🚀 Déploiement sur Netlify
+        run: |
+          netlify deploy --prod --dir=dist --auth ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+      - name: 🔗 Affichage de l'URL du site déployé
+        run: echo "🔗 Votre site est disponible à ${{ steps.deploy.outputs.url }}"
