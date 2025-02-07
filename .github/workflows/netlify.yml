@@ -52,7 +52,7 @@ jobs:
         run: |
           if [ -z "${{ secrets.NETLIFY_SITE_ID }}" ]; then
             echo "Création d'un nouveau site Netlify..."
-            site_id=$(netlify sites:create --name "my-new-site-$(date +%s)" --account-slug your-team-slug --json | jq -r '.id')
+            site_id=$(netlify sites:create --name "my-new-site-$(date +%s)" --account-slug sigyn --json | jq -r '.id')
             echo "NETLIFY_SITE_ID=$site_id" >> $GITHUB_ENV
           else
             echo "Utilisation du site Netlify existant..."
