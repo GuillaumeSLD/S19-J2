@@ -50,11 +50,6 @@ jobs:
       - name: 📥 Checkout du code
         uses: actions/checkout@v4
 
-      # Installer PNPM globalement
-      - name: 🚀 Installer PNPM globalement
-        run: |
-          npm install -g pnpm
-
       # Installer Netlify CLI globalement via PNPM
       - name: 🚀 Installer Netlify CLI via PNPM
         run: pnpm add -g netlify-cli
