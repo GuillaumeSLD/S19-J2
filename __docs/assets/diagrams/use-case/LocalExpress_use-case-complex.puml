@@ -1,0 +1,69 @@
+@startuml usecase
+left to right direction
+
+package Staff {
+    actor Livreur as Delivery
+    actor Administrateur as Admin
+}
+
+actor Client as Customer
+
+rectangle "Produits" {
+    usecase "Voir les produits disponibles" as ViewProducts
+    usecase "Voir le détail d'un produit" as ViewProductDetails
+    
+    usecase "Gérer les produits" as ManageProducts
+    usecase "Supprimer un produit" as DeleteProduct
+    usecase "Modifier un produit" as EditProduct
+    usecase "Ajouter un produit" as AddProduct
+}
+
+rectangle "Panier" {
+    usecase "Voir le montant total" as ViewTotal
+    usecase "Vider le panier" as DeleteCart
+    
+    usecase "Gérer un produit dans le panier" as ManageCartProduct
+    usecase "Supprimer un produit du panier" as DeleteCartProduct
+    usecase "Modifier la quantité d'un produit du panier" as EditCartProduct
+}
+
+rectangle "Commandes" {
+    usecase "Valider une commande" as ValidateOrder
+    usecase "Saisir ses informations personnelles" as InputCredentials
+    
+    usecase "Finaliser une commande" as FinalizeOrder
+    
+    usecase "Consulter les commandes" as ViewOrders
+}
+
+rectangle "Livraison" {
+    usecase "Payer la commande" as PayOrder
+    usecase "Informer les clients des nouveaux produits" as TeaseProducts
+}
+
+Customer --> ViewProducts
+ViewProducts <|.. ViewProductDetails : <<extends>>
+
+ManageProducts <--- Admin
+AddProduct <|.. ManageProducts : <<include>>
+EditProduct <|.. ManageProducts : <<include>>
+DeleteProduct <|.. ManageProducts : <<include>>
+
+Customer --> ViewTotal
+Customer --> DeleteCart
+Customer --> ManageCartProduct
+ManageCartProduct ..|> EditCartProduct : <<include>>
+ManageCartProduct ..|> DeleteCartProduct : <<include>>
+
+Customer --> ValidateOrder
+ValidateOrder <|.. InputCredentials : <<extends>>
+
+ViewOrders <-- Admin
+
+ViewOrders <-- Delivery
+FinalizeOrder <-- Delivery
+
+Customer --> PayOrder
+TeaseProducts <-- Delivery
+
+@enduml

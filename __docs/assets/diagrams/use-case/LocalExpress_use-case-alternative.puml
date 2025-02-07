@@ -1,0 +1,56 @@
+@startuml usecase
+left to right direction
+
+package Staff {
+    actor Livreur as Delivery
+    actor Administrateur as Admin
+}
+
+actor Client as Customer
+
+rectangle "Produits" {
+    usecase "Voir le détail d'un produit" as ViewProductDetails
+    usecase "Voir les produits disponibles" as ViewProducts
+    usecase "Gérer les produits – CRUD" as ManageProducts
+}
+
+rectangle "Panier" {
+    usecase "Voir le montant total" as ViewTotal
+    usecase "Vider le panier" as DeleteCart
+    usecase "Gérer un produit dans le panier – CRUD" as ManageCartProduct
+}
+
+rectangle "Commandes" {
+    usecase "Valider une commande" as ValidateOrder
+    usecase "Saisir ses informations personnelles" as InputCredentials
+    
+    usecase "Consulter les commandes" as ViewOrders
+    
+    usecase "Finaliser une commande" as FinalizeOrder
+}
+
+rectangle "Livraison" {
+    usecase "Payer la commande" as PayOrder
+    usecase "Informer les clients des nouveaux produits" as TeaseProducts
+}
+
+Customer --> ViewProductDetails
+Customer --> ViewProducts
+ManageProducts <--- Admin
+
+Customer --> ViewTotal
+Customer --> DeleteCart
+Customer --> ManageCartProduct
+
+Customer --> ValidateOrder
+Customer --> InputCredentials
+
+ViewOrders <-- Admin
+
+ViewOrders <-- Delivery
+FinalizeOrder <-- Delivery
+
+Customer --> PayOrder
+TeaseProducts <-- Delivery
+
+@enduml

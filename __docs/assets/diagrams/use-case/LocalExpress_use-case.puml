@@ -1,0 +1,38 @@
+@startuml usecase
+left to right direction
+
+package Staff {
+    actor Livreur as l
+    actor Administrateur as a
+}
+
+actor Client as c
+
+rectangle "Produits" {
+    c --> (Voir le détail d'un produit)
+    c --> (Voir les produits disponibles)
+    
+    (Gérer les produits – CRUD) <--- a
+}
+
+rectangle "Panier" {
+    c --> (Voir le montant total)
+    c --> (Vider le panier)
+    c --> (Gérer un produit dans le panier – CRUD)
+}
+
+rectangle "Commandes" {
+    c --> (Valider une commande)
+    c --> (Saisir ses informations personnelles)
+    
+    (Consulter les commandes) <-- a
+    
+    (Consulter les commandes) <-- l
+    (Finaliser une commande) <-- l
+}
+
+rectangle "Livraison" {
+    c --> (Payer la commande)
+    (Informer les clients des nouveaux produits) <-- l
+}
+@enduml
